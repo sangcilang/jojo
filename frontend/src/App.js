@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+﻿import { useCallback, useEffect, useMemo, useState } from "react";
 import "./App.css";
 
-const API_BASE = "http://localhost:4000/api";
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:4000/api";
 const PURPOSE_OPTIONS = [
   { value: "office", label: "Công việc văn phòng" },
   { value: "basicGaming", label: "Chơi game cơ bản" },
@@ -15,7 +15,7 @@ const GUIDE_POSTS = [
     id: "smart-builder-huong-dan",
     title: "Cách dùng Build PC thông minh để có cấu hình sát ngân sách",
     excerpt:
-      "Hướng dẫn chi tiết từng bước sử dụng tính năng Build PC thông minh trên Zanee.Store, từ chọn mục tiêu đến kiểm tra linh kiện.",
+      "Hướng dẫn chi tiết từng bước sử dụng tính năng Build PC thông minh trên TDatPC.Store, từ chọn mục tiêu đến kiểm tra linh kiện.",
     cover: "https://picsum.photos/seed/zanee-guide-builder-cover/1200/700",
     images: [
       "https://picsum.photos/seed/zanee-guide-builder-1/1200/700",
@@ -240,7 +240,7 @@ function Header({
     <header className="sticky-top header-shell">
       <nav className="navbar navbar-expand-lg navbar-dark container py-3">
         <a className="navbar-brand brand-mark" href="#/">
-          <span>Zanee.</span>Store
+          <span>TDatPC.</span>Store
         </a>
         <form
           className="search-shell mx-lg-4 my-3 my-lg-0"
@@ -332,7 +332,7 @@ function Hero({ products, categories, onCategory }) {
     <section className="hero-panel">
       <div>
         <span className="eyebrow">PC STORE | THIÊN ĐƯỜNG CÔNG NGHỆ</span>
-        <h1>Nâng cấp góc máy của bạn với Zanee.Store</h1>
+        <h1>Nâng cấp góc máy của bạn với TDatPC.Store</h1>
         <p>
           Từ RAM, SSD, VGA đến laptop và màn hình gaming, mọi cấu hình đều được chuẩn hóa cho đồ án
           bán hàng công nghệ với trải nghiệm mượt, hiện đại và dễ mở rộng.
@@ -536,7 +536,7 @@ function ProductDetail({ product, onCart, onBuy, isFavorite, onFavorite }) {
         </div>
         <div className="side-info">
           <div className="feature-card">
-            <h3>Cam kết tại Zanee.Store</h3>
+            <h3>Cam kết tại TDatPC.Store</h3>
             <p>Hàng chính hãng, bảo hành theo giá trị sản phẩm 3-6-9-12 tháng, hỗ trợ dựng cấu hình phù hợp ngân sách.</p>
             <p>Địa chỉ: 161 Nguyễn Gia Trí, Bình Thạnh</p>
             <p>Hotline: 0909954360</p>
@@ -562,8 +562,8 @@ function AuthPage({ mode, setMode, onLogin, onRegister, onReset }) {
         </div>
         <div className="glass-panel">
           <div className="auth-form-shell">
-            <span className="eyebrow">Tài khoản Zanee.Store</span>
-            <h2 className="auth-welcome">Chào mừng bạn đã quay lại Zanee.Store!</h2>
+            <span className="eyebrow">Tài khoản TDatPC.Store</span>
+            <h2 className="auth-welcome">Chào mừng bạn đã quay lại TDatPC.Store!</h2>
             <p className="auth-subtext">Đăng nhập để tiếp tục mua sắm, quản lý đơn hàng và theo dõi cấu hình yêu thích của bạn.</p>
           </div>
           {mode === "login" && (
@@ -850,7 +850,7 @@ function OrdersPage({ orders }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!pickupOrder || !window.EventSource) return undefined;
-    const token = localStorage.getItem("zanee-token");
+    const token = localStorage.getItem("tdatpc-token");
     const eventSource = new EventSource(`${API_BASE}/orders/${pickupOrder.id}/stream?token=${token}`);
     eventSource.onmessage = (event) => {
       const payload = JSON.parse(event.data);
@@ -1148,7 +1148,7 @@ function Footer() {
       <div className="container py-4">
         <div className="row g-4">
           <div className="col-md-4">
-            <h5>Zanee.Store</h5>
+            <h5>TDatPC.Store</h5>
             <p>Store chuyên máy tính và linh kiện điện tử cho học tập, gaming, đồ họa và công việc IT.</p>
           </div>
           <div className="col-md-4">
@@ -1159,7 +1159,7 @@ function Footer() {
           <div className="col-md-4">
             <h5>Chủ store</h5>
             <p>Trần Đông Khuê</p>
-            <p>Copyright © 2026 Zanee.Store</p>
+            <p>Copyright © 2026 TDatPC.Store</p>
           </div>
         </div>
       </div>
@@ -1170,7 +1170,7 @@ function Footer() {
 function App() {
   const [route, setRoute] = useState(parseRoute());
   const [boot, setBoot] = useState({ products: [], categories: [], featured: [], credentialsHint: { admin: {}, user: {}, locked: {} } });
-  const [session, setSession] = useState({ token: localStorage.getItem("zanee-token") || "", user: null, favorites: [], cart: [], orders: [] });
+  const [session, setSession] = useState({ token: localStorage.getItem("tdatpc-token") || "", user: null, favorites: [], cart: [], orders: [] });
   const [adminData, setAdminData] = useState({ stats: {}, users: [], orders: [], categories: [] });
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -1208,9 +1208,9 @@ function App() {
       try {
         const data = await api("/me", { token: session.token });
         setSession((current) => ({ ...current, token: session.token, ...data }));
-        localStorage.setItem("zanee-token", session.token);
+        localStorage.setItem("tdatpc-token", session.token);
       } catch (error) {
-        localStorage.removeItem("zanee-token");
+        localStorage.removeItem("tdatpc-token");
         setSession({ token: "", user: null, favorites: [], cart: [], orders: [] });
       }
     })();
@@ -1250,9 +1250,9 @@ function App() {
     try {
       const data = await api("/me", { token });
       setSession((current) => ({ ...current, token, ...data }));
-      localStorage.setItem("zanee-token", token);
+      localStorage.setItem("tdatpc-token", token);
     } catch (error) {
-      localStorage.removeItem("zanee-token");
+      localStorage.removeItem("tdatpc-token");
       setSession({ token: "", user: null, favorites: [], cart: [], orders: [] });
     }
   }, [session.token]);
@@ -1279,7 +1279,7 @@ function App() {
   }
 
   function handleLogout() {
-    localStorage.removeItem("zanee-token");
+    localStorage.removeItem("tdatpc-token");
     setSession({ token: "", user: null, favorites: [], cart: [], orders: [] });
     goTo("/");
   }

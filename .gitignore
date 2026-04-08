@@ -2,5 +2,8 @@ node_modules/
 backend/node_modules/
 frontend/node_modules/
 backend/data/zanee.db
+backend/data/zanee.db-shm
+backend/data/zanee.db-wal
 backend/.env
+frontend/.env
 .env
