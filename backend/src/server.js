@@ -223,9 +223,10 @@ app.get("/api/bootstrap", async (req, res) => {
     products,
     featured: products.slice(0, 8),
     credentialsHint: {
-      admin: { username: "admin", password: "Admin@123" },
-      user: { username: "minhdev", password: "User@123" },
-      locked: { username: "blockeduser", password: "Locked@123" },
+      admin: { username: "admin", password: "123456" },
+      staff: { username: "nhanvien", password: "123456" },
+      user: { username: "minhdev", password: "123456" },
+      locked: { username: "blockeduser", password: "123456" },
     },
   });
 });
@@ -255,7 +256,7 @@ app.post("/api/auth/register", async (req, res) => {
     .input("username", sql.NVarChar, username)
     .input("email", sql.NVarChar, email)
     .input("phone", sql.NVarChar, phone)
-    .query("SELECT TOP 1 * FROM Users WHERE Username = @username OR Email = @email OR Phone = @phone");
+    .query("SELECT * FROM Users WHERE Username = @username OR Email = @email OR Phone = @phone LIMIT 1");
 
   if (exists.recordset[0]) {
     return res.status(409).json({ message: "Username, email hoac so dien thoai da ton tai." });
@@ -272,25 +273,30 @@ app.post("/api/auth/register", async (req, res) => {
     createdAt: new Date(),
   };
 
-  await pool
-    .request()
-    .input("id", sql.NVarChar, user.id)
-    .input("username", sql.NVarChar, user.username)
-    .input("email", sql.NVarChar, user.email)
-    .input("phone", sql.NVarChar, user.phone)
-    .input("passwordHash", sql.NVarChar, user.passwordHash)
-    .input("role", sql.NVarChar, user.role)
-    .input("isLocked", sql.Bit, user.isLocked)
-    .input("createdAt", sql.DateTime2, user.createdAt)
-    .query(`
-      INSERT INTO Users (Id, Username, Email, Phone, PasswordHash, Role, IsLocked, CreatedAt)
-      VALUES (@id, @username, @email, @phone, @passwordHash, @role, @isLocked, @createdAt)
-    `);
+  try {
+    await pool
+      .request()
+      .input("id", sql.NVarChar, user.id)
+      .input("username", sql.NVarChar, user.username)
+      .input("email", sql.NVarChar, user.email)
+      .input("phone", sql.NVarChar, user.phone)
+      .input("passwordHash", sql.NVarChar, user.passwordHash)
+      .input("role", sql.NVarChar, user.role)
+      .input("isLocked", sql.Bit, user.isLocked)
+      .input("createdAt", sql.DateTime2, user.createdAt)
+      .query(`
+        INSERT INTO Users (Id, Username, Email, Phone, PasswordHash, Role, IsLocked, CreatedAt)
+        VALUES (@id, @username, @email, @phone, @passwordHash, @role, @isLocked, @createdAt)
+      `);
 
-  return res.status(201).json({
-    token: issueToken(user),
-    user: sanitizeUser(user),
-  });
+    return res.status(201).json({
+      token: issueToken(user),
+      user: sanitizeUser(user),
+    });
+  } catch (error) {
+    console.error("Registration error:", error);
+    return res.status(500).json({ message: "Loi khi tao tai khoan: " + error.message });
+  }
 });
 
 app.post("/api/auth/login", async (req, res) => {
@@ -309,7 +315,7 @@ app.post("/api/auth/reset-password", async (req, res) => {
     .request()
     .input("username", sql.NVarChar, username)
     .input("phone", sql.NVarChar, phone)
-    .query("SELECT TOP 1 * FROM Users WHERE Username = @username AND Phone = @phone");
+    .query("SELECT * FROM Users WHERE Username = @username AND Phone = @phone LIMIT 1");
 
   if (!result.recordset[0]) {
     return res.status(404).json({ message: "Thong tin xac thuc khong dung, khong the dat lai mat khau." });
@@ -343,7 +349,7 @@ app.post("/api/favorites/:productId", authRequired, async (req, res) => {
     .request()
     .input("userId", sql.NVarChar, req.user.id)
     .input("productId", sql.NVarChar, req.params.productId)
-    .query("SELECT TOP 1 * FROM Favorites WHERE UserId = @userId AND ProductId = @productId");
+    .query("SELECT * FROM Favorites WHERE UserId = @userId AND ProductId = @productId LIMIT 1");
 
   if (existing.recordset[0]) {
     await pool
@@ -439,7 +445,8 @@ app.post("/api/orders", authRequired, async (req, res) => {
   const total = subtotal + shippingFee;
   const orderId = `ord-${Date.now()}`;
   const pickupDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
-  const status = fulfillmentMethod === "pickup" ? "Cho nhan tai store" : "Dang chuan bi giao";
+  // Đơn nhận tại cửa hàng mặc định là Hoàn thành
+  const status = fulfillmentMethod === "pickup" ? "Hoan thanh" : "Dang chuan bi giao";
 
   const pool = await getPool();
   try {
@@ -486,10 +493,16 @@ app.post("/api/orders", authRequired, async (req, res) => {
 
   const orders = await getOrders(req.user.id);
   const order = orders.find((item) => item.id === orderId);
+  
+  // For VNPay, return URL to mock payment page in frontend
+  const paymentUrl = paymentMethod === "vnpay" 
+    ? `http://localhost:3000/#/vnpay-mock?orderId=${orderId}&amount=${total}&orderInfo=${encodeURIComponent('Thanh toan don hang ' + orderId)}`
+    : null;
+  
   res.status(201).json({
     message: "Thanh toan thanh cong, hoa don da duoc luu.",
     order,
-    paymentUrl: paymentMethod === "vnpay" ? `https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?order_id=${orderId}` : null,
+    paymentUrl,
   });
 });
 
@@ -513,6 +526,35 @@ app.get("/api/orders/:id/stream", authRequired, async (req, res) => {
   req.on("close", () => clearInterval(timer));
 });
 
+app.patch("/api/orders/:id/confirm-received", authRequired, async (req, res) => {
+  if (req.user.role !== "user") {
+    return res.status(403).json({ message: "Chuc nang nay chi danh cho user." });
+  }
+
+  const orders = await getOrders(req.user.id);
+  const order = orders.find((item) => item.id === req.params.id);
+  
+  if (!order) {
+    return res.status(404).json({ message: "Khong tim thay don hang." });
+  }
+
+  if (order.status !== "Da giao hang") {
+    return res.status(400).json({ message: "Chi co the xac nhan don hang da duoc giao." });
+  }
+
+  const pool = await getPool();
+  await pool
+    .request()
+    .input("id", sql.NVarChar, req.params.id)
+    .input("status", sql.NVarChar, "Hoan thanh")
+    .query("UPDATE Orders SET Status = @status WHERE Id = @id");
+
+  const updatedOrders = await getOrders(req.user.id);
+  const updatedOrder = updatedOrders.find((item) => item.id === req.params.id);
+  
+  res.json({ message: "Da xac nhan nhan hang thanh cong.", order: updatedOrder });
+});
+
 app.patch("/api/account/password", authRequired, async (req, res) => {
   const currentUser = await getUserById(req.user.id);
   if (!bcrypt.compareSync(req.body.currentPassword || "", currentUser.passwordHash)) {
@@ -529,18 +571,100 @@ app.patch("/api/account/password", authRequired, async (req, res) => {
 
 app.get("/api/admin/stats", authRequired, requireRole("admin"), async (req, res) => {
   const pool = await getPool();
+  const timeRange = req.query.range || '7days'; // 7days, 30days, 12months, all
+  
   const [users, products, orders, revenue] = await Promise.all([
     pool.request().query("SELECT SUM(CASE WHEN Role = 'user' THEN 1 ELSE 0 END) AS totalUsers, SUM(CASE WHEN Role = 'admin' THEN 1 ELSE 0 END) AS totalAdmins FROM Users"),
     pool.request().query("SELECT COUNT(*) AS totalProducts FROM Products"),
     pool.request().query("SELECT COUNT(*) AS totalOrders FROM Orders"),
-    pool.request().query("SELECT ISNULL(SUM(Total), 0) AS totalRevenue FROM Orders"),
+    pool.request().query("SELECT COALESCE(SUM(Total), 0) AS totalRevenue FROM Orders"),
   ]);
+
+  // Doanh thu theo thời gian
+  let revenueQuery;
+  if (timeRange === '7days') {
+    revenueQuery = `
+      SELECT 
+        DATE(CreatedAt) as date,
+        SUM(Total) as revenue
+      FROM Orders
+      WHERE CreatedAt >= DATE('now', '-7 days')
+      GROUP BY DATE(CreatedAt)
+      ORDER BY date
+    `;
+  } else if (timeRange === '30days') {
+    revenueQuery = `
+      SELECT 
+        DATE(CreatedAt) as date,
+        SUM(Total) as revenue
+      FROM Orders
+      WHERE CreatedAt >= DATE('now', '-30 days')
+      GROUP BY DATE(CreatedAt)
+      ORDER BY date
+    `;
+  } else if (timeRange === '12months') {
+    revenueQuery = `
+      SELECT 
+        strftime('%Y-%m', CreatedAt) as date,
+        SUM(Total) as revenue
+      FROM Orders
+      WHERE CreatedAt >= DATE('now', '-12 months')
+      GROUP BY strftime('%Y-%m', CreatedAt)
+      ORDER BY date
+    `;
+  } else { // all
+    revenueQuery = `
+      SELECT 
+        strftime('%Y-%m', CreatedAt) as date,
+        SUM(Total) as revenue
+      FROM Orders
+      GROUP BY strftime('%Y-%m', CreatedAt)
+      ORDER BY date
+    `;
+  }
+  
+  const revenueByTime = await pool.request().query(revenueQuery);
+
+  // Trạng thái đơn hàng
+  const ordersByStatus = await pool.request().query(`
+    SELECT Status, COUNT(*) as count
+    FROM Orders
+    GROUP BY Status
+  `);
+
+  // Top 5 sản phẩm bán chạy
+  const topProducts = await pool.request().query(`
+    SELECT p.Name, SUM(oi.Quantity) as totalSold
+    FROM OrderItems oi
+    INNER JOIN Products p ON p.Id = oi.ProductId
+    GROUP BY p.Id, p.Name
+    ORDER BY totalSold DESC
+    LIMIT 5
+  `);
+
+  // Người dùng mới theo tháng
+  const newUsersByMonth = await pool.request().query(`
+    SELECT 
+      strftime('%Y-%m', CreatedAt) as month,
+      COUNT(*) as count
+    FROM Users
+    WHERE Role = 'user'
+    GROUP BY strftime('%Y-%m', CreatedAt)
+    ORDER BY month DESC
+    LIMIT 12
+  `);
+
   res.json({
     totalUsers: users.recordset[0].totalUsers || 0,
     totalAdmins: users.recordset[0].totalAdmins || 0,
     totalProducts: products.recordset[0].totalProducts || 0,
     totalOrders: orders.recordset[0].totalOrders || 0,
     totalRevenue: Number(revenue.recordset[0].totalRevenue || 0),
+    revenueByTime: revenueByTime.recordset.map(r => ({ date: r.date, revenue: Number(r.revenue) })),
+    ordersByStatus: ordersByStatus.recordset.map(r => ({ status: r.Status, count: r.count })),
+    topProducts: topProducts.recordset.map(r => ({ name: r.Name, sold: r.totalSold })),
+    newUsersByMonth: newUsersByMonth.recordset.map(r => ({ month: r.month, count: r.count })),
+    timeRange,
   });
 });
 
@@ -606,12 +730,12 @@ app.put("/api/admin/categories/:name", authRequired, requireRole("admin"), async
 
 app.delete("/api/admin/categories/:name", authRequired, requireRole("admin"), async (req, res) => {
   const pool = await getPool();
-  let otherCategory = await pool.request().query("SELECT TOP 1 Id FROM Categories WHERE Name = 'Khac'");
+  let otherCategory = await pool.request().query("SELECT Id FROM Categories WHERE Name = 'Khac' LIMIT 1");
   if (!otherCategory.recordset[0]) {
     await pool.request().query("INSERT INTO Categories (Name) VALUES ('Khac')");
-    otherCategory = await pool.request().query("SELECT TOP 1 Id FROM Categories WHERE Name = 'Khac'");
+    otherCategory = await pool.request().query("SELECT Id FROM Categories WHERE Name = 'Khac' LIMIT 1");
   }
-  const deleteCategory = await pool.request().input("name", sql.NVarChar, req.params.name).query("SELECT TOP 1 Id FROM Categories WHERE Name = @name");
+  const deleteCategory = await pool.request().input("name", sql.NVarChar, req.params.name).query("SELECT Id FROM Categories WHERE Name = @name LIMIT 1");
   if (deleteCategory.recordset[0]) {
     await pool
       .request()
@@ -625,7 +749,7 @@ app.delete("/api/admin/categories/:name", authRequired, requireRole("admin"), as
 
 app.post("/api/admin/products", authRequired, requireRole("admin"), async (req, res) => {
   const pool = await getPool();
-  const category = await pool.request().input("name", sql.NVarChar, req.body.category).query("SELECT TOP 1 Id FROM Categories WHERE Name = @name");
+  const category = await pool.request().input("name", sql.NVarChar, req.body.category).query("SELECT Id FROM Categories WHERE Name = @name LIMIT 1");
   const product = {
     id: `prd-${Date.now()}`,
     sku: `ZNS-${Date.now()}`,
@@ -652,7 +776,7 @@ app.post("/api/admin/products", authRequired, requireRole("admin"), async (req, 
 
 app.put("/api/admin/products/:id", authRequired, requireRole("admin"), async (req, res) => {
   const pool = await getPool();
-  const category = await pool.request().input("name", sql.NVarChar, req.body.category).query("SELECT TOP 1 Id FROM Categories WHERE Name = @name");
+  const category = await pool.request().input("name", sql.NVarChar, req.body.category).query("SELECT Id FROM Categories WHERE Name = @name LIMIT 1");
   await pool
     .request()
     .input("id", sql.NVarChar, req.params.id)
@@ -677,6 +801,50 @@ app.delete("/api/admin/products/:id", authRequired, requireRole("admin"), async 
   const pool = await getPool();
   await pool.request().input("id", sql.NVarChar, req.params.id).query("DELETE FROM Products WHERE Id = @id");
   res.json({ message: "Da xoa san pham." });
+});
+
+// ============ STAFF ROUTES ============
+app.get("/api/staff/orders", authRequired, requireRole("staff"), async (req, res) => {
+  const pool = await getPool();
+  const usersOrders = await pool.request().query("SELECT DISTINCT UserId FROM Orders");
+  const orders = [];
+  for (const row of usersOrders.recordset) {
+    orders.push(...(await getOrders(row.UserId)));
+  }
+  res.json(orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+});
+
+app.patch("/api/staff/orders/:id/status", authRequired, requireRole("staff"), async (req, res) => {
+  const { status } = req.body;
+  const validStatuses = [
+    "Cho nhan tai store",
+    "Dang chuan bi giao",
+    "Dang giao hang",
+    "Da giao hang",
+    "Hoan thanh",
+    "Da huy"
+  ];
+  
+  if (!validStatuses.includes(status)) {
+    return res.status(400).json({ message: "Trang thai khong hop le." });
+  }
+
+  const pool = await getPool();
+  await pool
+    .request()
+    .input("id", sql.NVarChar, req.params.id)
+    .input("status", sql.NVarChar, status)
+    .query("UPDATE Orders SET Status = @status WHERE Id = @id");
+
+  // Get updated order
+  const result = await pool.request().input("id", sql.NVarChar, req.params.id).query("SELECT UserId FROM Orders WHERE Id = @id");
+  if (result.recordset[0]) {
+    const orders = await getOrders(result.recordset[0].UserId);
+    const order = orders.find(o => o.id === req.params.id);
+    res.json({ message: "Cap nhat trang thai thanh cong.", order });
+  } else {
+    res.status(404).json({ message: "Khong tim thay don hang." });
+  }
 });
 
 app.use((error, req, res, next) => {

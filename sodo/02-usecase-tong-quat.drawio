@@ -1,0 +1,189 @@
+<mxfile host="app.diagrams.net" modified="2026-04-09T00:00:00.000Z" agent="Kiro" version="24.0.0" type="device">
+  <diagram id="diagram2" name="Use Case Tổng Quát">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- System Boundary -->
+        <mxCell id="system" value="Hệ Thống TDatPC.Store" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1976D2;fontSize=16;fontStyle=1;startSize=40;" vertex="1" parent="1">
+          <mxGeometry x="300" y="80" width="800" height="700" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Cases for User -->
+        <mxCell id="uc1" value="Đăng ký/Đăng nhập" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="system">
+          <mxGeometry x="50" y="60" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc2" value="Xem sản phẩm" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="system">
+          <mxGeometry x="50" y="140" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc3" value="Tìm kiếm sản phẩm" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="system">
+          <mxGeometry x="50" y="220" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc4" value="Quản lý giỏ hàng" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="system">
+          <mxGeometry x="50" y="300" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc5" value="Đặt hàng" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="system">
+          <mxGeometry x="50" y="380" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc6" value="Thanh toán" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="system">
+          <mxGeometry x="250" y="380" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc7" value="Xem đơn hàng" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="system">
+          <mxGeometry x="250" y="460" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc8" value="Xác nhận nhận hàng" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="system">
+          <mxGeometry x="250" y="540" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc9" value="Build PC thông minh" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="system">
+          <mxGeometry x="50" y="460" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc10" value="Quản lý yêu thích" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="system">
+          <mxGeometry x="50" y="540" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Cases for Staff -->
+        <mxCell id="uc11" value="Quản lý đơn hàng Staff" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;" vertex="1" parent="system">
+          <mxGeometry x="450" y="140" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc12" value="Cập nhật trạng thái đơn" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;" vertex="1" parent="system">
+          <mxGeometry x="450" y="220" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc13" value="In hóa đơn" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;" vertex="1" parent="system">
+          <mxGeometry x="450" y="300" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Cases for Admin -->
+        <mxCell id="uc14" value="Quản lý sản phẩm" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFCCBC;strokeColor=#E64A19;" vertex="1" parent="system">
+          <mxGeometry x="610" y="140" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc15" value="Quản lý danh mục" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFCCBC;strokeColor=#E64A19;" vertex="1" parent="system">
+          <mxGeometry x="610" y="220" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc16" value="Quản lý người dùng" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFCCBC;strokeColor=#E64A19;" vertex="1" parent="system">
+          <mxGeometry x="610" y="300" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc17" value="Xem thống kê" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFCCBC;strokeColor=#E64A19;" vertex="1" parent="system">
+          <mxGeometry x="610" y="380" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc18" value="Quản lý đơn hàng Admin" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFCCBC;strokeColor=#E64A19;" vertex="1" parent="system">
+          <mxGeometry x="610" y="460" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Actors -->
+        <mxCell id="user" value="👤 User&lt;br&gt;Khách Hàng" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#c8e6c9;strokeColor=#2E7D32;" vertex="1" parent="1">
+          <mxGeometry x="150" y="300" width="60" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="staff" value="👨‍💼 Staff&lt;br&gt;Nhân Viên" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#fff9c4;strokeColor=#F9A825;" vertex="1" parent="1">
+          <mxGeometry x="150" y="480" width="60" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="admin" value="👨‍💻 Admin&lt;br&gt;Quản Trị" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#ffccbc;strokeColor=#E64A19;" vertex="1" parent="1">
+          <mxGeometry x="150" y="660" width="60" height="120" as="geometry" />
+        </mxCell>
+        
+        <!-- External Systems -->
+        <mxCell id="vnpay" value="VNPay Gateway" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#7B1FA2;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="380" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="email" value="Email Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#7B1FA2;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="480" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Connections User to Use Cases -->
+        <mxCell id="conn_u_uc1" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="user" target="uc1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_u_uc2" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="user" target="uc2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_u_uc3" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="user" target="uc3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_u_uc4" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="user" target="uc4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_u_uc5" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="user" target="uc5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_u_uc6" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="user" target="uc6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_u_uc7" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="user" target="uc7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_u_uc8" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="user" target="uc8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_u_uc9" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="user" target="uc9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_u_uc10" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="user" target="uc10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Connections Staff to Use Cases -->
+        <mxCell id="conn_s_uc1" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="staff" target="uc1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_s_uc11" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="staff" target="uc11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_s_uc12" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="staff" target="uc12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_s_uc13" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="staff" target="uc13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Connections Admin to Use Cases -->
+        <mxCell id="conn_a_uc1" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="admin" target="uc1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_a_uc14" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="admin" target="uc14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_a_uc15" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="admin" target="uc15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_a_uc16" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="admin" target="uc16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_a_uc17" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="admin" target="uc17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_a_uc18" value="" style="endArrow=none;html=1;strokeWidth=1;" edge="1" parent="1" source="admin" target="uc18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Connections to External Systems -->
+        <mxCell id="conn_uc6_vnpay" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;dashed=1;html=1;strokeWidth=1;" edge="1" parent="1" source="uc6" target="vnpay">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_uc5_email" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;dashed=1;html=1;strokeWidth=1;" edge="1" parent="1" source="uc5" target="email">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_uc12_email" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;dashed=1;html=1;strokeWidth=1;" edge="1" parent="1" source="uc12" target="email">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Case Dependencies -->
+        <mxCell id="conn_uc2_uc3" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="endArrow=open;dashed=1;html=1;strokeWidth=1;" edge="1" parent="1" source="uc2" target="uc3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_uc4_uc5" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="endArrow=open;dashed=1;html=1;strokeWidth=1;" edge="1" parent="1" source="uc4" target="uc5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_uc5_uc6" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="endArrow=open;dashed=1;html=1;strokeWidth=1;" edge="1" parent="1" source="uc5" target="uc6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_uc5_uc7" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="endArrow=open;dashed=1;html=1;strokeWidth=1;" edge="1" parent="1" source="uc5" target="uc7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_uc7_uc8" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="endArrow=open;dashed=1;html=1;strokeWidth=1;" edge="1" parent="1" source="uc7" target="uc8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
