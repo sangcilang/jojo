@@ -1,4 +1,4 @@
-# Zanee Store - Hệ thống Quản lý Cửa hàng Linh kiện Máy tính
+# TDatPC Store - Hệ thống Quản lý Cửa hàng Linh kiện Máy tính
 
 Ứng dụng web fullstack quản lý cửa hàng linh kiện máy tính với React frontend và Node.js backend sử dụng SQLite database.
 
