@@ -893,6 +893,18 @@
       "cart": []
     },
     {
+      "id": "usr-staff",
+      "username": "staff01",
+      "email": "staff01@zanee.store",
+      "phone": "0909000111",
+      "passwordHash": "$2b$10$u1QwQwQwQwQwQwQwQwQwQeQwQwQwQwQwQwQwQwQwQwQwQwQwQwQw", // hash for '123456'
+      "role": "staff",
+      "isLocked": false,
+      "createdAt": "2026-04-18T08:00:00.000Z",
+      "favorites": [],
+      "cart": []
+    },
+    {
       "id": "usr-user",
       "username": "minhdev",
       "email": "minh@zanee.store",

@@ -301,10 +301,17 @@ app.post("/api/auth/register", async (req, res) => {
 
 app.post("/api/auth/login", async (req, res) => {
   const { username, password } = req.body;
+  console.log("Login attempt:", { username, password }); // Log thông tin đăng nhập
+
   const user = await getUserByUsername(username);
+  console.log("User found:", user); // Log thông tin người dùng tìm thấy
+
   if (!user || !bcrypt.compareSync(password || "", user.passwordHash)) {
+    console.log("Login failed: Invalid username or password"); // Log khi đăng nhập thất bại
     return res.status(401).json({ message: "Sai username hoac password." });
   }
+
+  console.log("Login successful for user:", user.username); // Log khi đăng nhập thành công
   return res.json({ token: issueToken(user), user: sanitizeUser(user) });
 });
 
